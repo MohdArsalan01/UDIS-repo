@@ -11,7 +11,7 @@ import json
 #     created_At = models.DateTimeField(null=True, blank=True, auto_now=True)
 #     primary_email = models.EmailField()
 #     name = models.CharField(max_length=200)
-#     department = models.TextField(default="Computer Science and Engineering")
+#     department = models.TextField(default="Mathematics")
 
 #     def get_derived_type(self):
 #         if self.derived_type == 'Secretary':
@@ -29,7 +29,7 @@ class usermodel(AbstractUser):
 
 	created_At = models.DateTimeField(null=True, blank=True, auto_now=True)
 	name = models.CharField(max_length=200, null=False)
-	department = models.TextField(default="Computer Science and Engineering")
+	department = models.TextField(default="Mathematics")
 	firstname = models.CharField(max_length=200, blank=True, null=True)
 	lastname = models.CharField(max_length=200, blank=True, null=True)
 	USERNAME_FIELD = "email"
@@ -52,7 +52,7 @@ class Course(models.Model):
 	subno = models.CharField(max_length=200)
 	name = models.TextField()
 	department = models.CharField(
-		max_length=255, default="Computer Science and Engineering", blank=True)
+		max_length=255, default="Mathematics", blank=True)
 	url = models.CharField(max_length=200, blank=True, null=True)
 	type = models.CharField(max_length=200, default="Depth Core", blank=True)
 	mode = models.CharField(

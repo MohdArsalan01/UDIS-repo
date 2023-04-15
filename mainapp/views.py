@@ -664,6 +664,7 @@ def denypay(request, transid):
 
 
 def signUp(request, utype):
+	error=""
 	if request.user.is_authenticated:
 		return redirect('/')
 	if utype.lower() == "student":
@@ -691,11 +692,20 @@ def signUp(request, utype):
 			aadhar = dic.get('aadhar')[0]
 			pin_code = dic.get('pin')[0]
 			instemail = dic.get('instemail')[0]
-			a = Student.objects.create_user(email=email, password=password1, firstname=firstname, lastname=lastname, name=firstname+" "+lastname,
+			a=usermodel.objects.filter(email=email)
+			if len(a)>0:
+				error="User with this email already exists"
+			else:
+				a = Student.objects.create_user(email=email, password=password1, firstname=firstname, lastname=lastname, name=firstname+" "+lastname,
 											rollno=rollno, mobile=mobile, gender=gender, address=address, state=state, location=location, aadhar=aadhar, pin_code=pin_code, inst_email=instemail)
 
-			a.derived_type = "Student"
-			a.save()
+				a.derived_type = "Student"
+				a.save()
+				print(password1, email)
+				user = authenticate(email=email, password=password1)
+				print(user)
+				login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+				return redirect('/')
 		elif utype == "Secretary":
 			email = dic.get('email')[0]
 			password1 = dic.get('password1')[0]
@@ -703,12 +713,20 @@ def signUp(request, utype):
 			lastname = dic.get('lastname')[0]
 			# rollno = dic.get('rollno')[0]
 			mobile = dic.get('mobile')[0]
-
-			a = Secretary.objects.create_user(email=email, password=password1, firstname=firstname, lastname=lastname, name=firstname+" "+lastname,
+			a = usermodel.objects.filter(email=email)
+			if len(a) > 0:
+				error = "User with this email already exists"
+			else:
+				a = Secretary.objects.create_user(email=email, password=password1, firstname=firstname, lastname=lastname, name=firstname+" "+lastname,
 											  mobile=mobile, is_superuser=True, is_staff=True)
 
-			a.derived_type = "Secretary"
-			a.save()
+				a.derived_type = "Secretary"
+				a.save()
+				print(password1, email)
+				user = authenticate(email=email, password=password1)
+				print(user)
+				login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+				return redirect('/')
 		if utype == "Professor":
 			email = dic.get('email')[0]
 			password1 = dic.get('password1')[0]
@@ -716,23 +734,27 @@ def signUp(request, utype):
 			lastname = dic.get('lastname')[0]
 			# rollno = dic.get('rollno')[0]
 			mobile = dic.get('mobile')[0]
-			a = Professor.objects.create_user(email=email, password=password1, firstname=firstname, lastname=lastname, name=firstname+" "+lastname,
+			a = usermodel.objects.filter(email=email)
+			if len(a) > 0:
+				error = "User with this email already exists"
+			else:
+				a = Professor.objects.create_user(email=email, password=password1, firstname=firstname, lastname=lastname, name=firstname+" "+lastname,
 											  mobile=mobile, is_superuser=True, is_staff=True)
 
-			a.derived_type = "Professor"
-			a.save()
+				a.derived_type = "Professor"
+				a.save()
+				print(password1, email)
+				user = authenticate(email=email, password=password1)
+				print(user)
+				login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+				return redirect('/')
 
-			print(password1, email)
-			user = authenticate(email=email, password=password1)
-			print(user)
-			login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-			return redirect('/')
 	if utype == "Professor":
-		return render(request, "signup_prof.html", {"utype": utype})
+		return render(request, "signup_prof.html", {"utype": utype,"error":error})
 	elif utype == "Secretary":
-		return render(request, "signup_prof.html", {"utype": utype})
+		return render(request, "signup_prof.html", {"utype": utype,"error":error})
 	else:
-		return render(request, "signup.html", {"utype": utype})
+		return render(request, "signup.html", {"utype": utype,"error":error})
 
 	# return render(request, "signup.html")
 
